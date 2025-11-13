@@ -28,11 +28,11 @@ class CreateUser(APIView):
             return Response(success, status=status.HTTP_201_CREATED)
         
 
-class Login(APIView):
-    def login(self, request):
-        serializer = UserSerializer(data = request.data)
-        if serializer.is_valid():
-            
+# class Login(APIView):
+#     def login(self, request):
+#         serializer = UserSerializer(data = request.data)
+#         if serializer.is_valid():
+
 
 
         
