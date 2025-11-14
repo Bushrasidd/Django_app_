@@ -2,7 +2,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer
+from .serializers import UserSerializer, LoginSerializers
 from http import HTTPStatus
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -25,13 +25,17 @@ class CreateUser(APIView):
                 'username' : user.username
 
             }
-            return Response(success, status=status.HTTP_201_CREATED)
+            return Response(success, status=status.HTTP_201_CREATED) # syntax research
         
 
-# class Login(APIView):
-#     def login(self, request):
-#         serializer = UserSerializer(data = request.data)
-#         if serializer.is_valid():
+class Login(APIView):
+     def post(self, request):
+        serializer = LoginSerializers(data = request.data)
+        if serializer.is_valid():
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 
 
