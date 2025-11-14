@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 
 """
@@ -48,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'users'
+    'users',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -78,6 +80,21 @@ TEMPLATES = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+}
+
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
@@ -89,11 +106,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DBNAME'),
-            'USER': os.environ.get('DBUSER'),
-            'PASSWORD': os.environ.get('DBPASSWORD'),
-            'HOST': os.environ.get('HOST'), # Or the database server's IP/hostname
-            'PORT': os.environ.get('DBPORT'),           # Leave empty for default, or specify port
+            'NAME': os.getenv('DBNAME'),
+            'USER': os.getenv('DBUSER'),
+            'PASSWORD': os.getenv('DBPASSWORD'),
+            'HOST': os.getenv('HOST'), # Or the database server's IP/hostname
+            'PORT': os.getenv('DBPORT'),           # Leave empty for default, or specify port
         }
     }
 
