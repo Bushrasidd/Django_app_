@@ -6,12 +6,14 @@ from .serializers import UserSerializer, LoginSerializers
 from http import HTTPStatus
 from rest_framework import status
 from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 
 
 @api_view(['Get'])
 def hello(request):
-    return Response({"Hii you can do it"})
+    return Response({"Hii you can do it!!"})
 
 
 class CreateUser(APIView):
@@ -26,6 +28,22 @@ class CreateUser(APIView):
 
             }
             return Response(success, status=status.HTTP_201_CREATED) # syntax research
+        
+class logout(APIView):
+    def post(self,request):
+            refresh_token = request.data["refresh"]
+            if not refresh_token:
+                return Response({"error": "Refresh token is required"}, status=400)
+            try:
+
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+                return Response({"message": "Logged out successfully"}, status=200)
+
+            except TokenError:
+                return Response({"message": "user has already been logged out"}, status=200)
+
+            
         
 
 class Login(APIView):
