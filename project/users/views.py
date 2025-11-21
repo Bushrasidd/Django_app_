@@ -2,7 +2,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer, LoginSerializers
+from .serializers import UserSerializer, LoginSerializers, deleteUser
 from http import HTTPStatus
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -42,12 +42,10 @@ class logout(APIView):
 
             except TokenError:
                 return Response({"message": "user has already been logged out"}, status=200)
-
-            
-        
+       
 
 class Login(APIView):
-     def post(self, request):
+    def post(self, request):
         serializer = LoginSerializers(data = request.data)
         if serializer.is_valid():
             return Response(serializer.validated_data, status=status.HTTP_200_OK)
@@ -78,4 +76,19 @@ class UpdateUser(APIView):
         if serializer.is_valid():
             serializer.save()
         return Response(status=status.HTTP_200_OK)
+    
+
+class DeleteUser(APIView):
+    def delete(self, request):
+        user = deleteUser(data = request.data)
+        try:
+            if user.is_valid():
+                result = user.del_user()   
+                return Response(result, status=status.HTTP_200_OK)
+        except:
+               return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 

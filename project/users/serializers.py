@@ -60,6 +60,17 @@ class LoginSerializers(serializers.Serializer):
             "email": user.email,
             }
         }
+    
+
+class deleteUser(serializers.Serializer):
+    id = serializers.IntegerField()
+
+    def del_user(self):
+        user_id = self.validated_data.get('id')
+        deleted_count, _ = User.objects.filter(id=user_id).delete()
+        if deleted_count == 0:
+            raise serializers.ValidationError("User does not exist")
+        return {"message": "User deleted successfully"}
 
 
 
