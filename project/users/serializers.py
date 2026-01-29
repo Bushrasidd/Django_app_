@@ -71,6 +71,10 @@ class deleteUser(serializers.Serializer):
         if deleted_count == 0:
             raise serializers.ValidationError("User does not exist")
         return {"message": "User deleted successfully"}
+    
+
+    
+
 
 
 
