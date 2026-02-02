@@ -1,3 +1,4 @@
+import select
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from http import HTTPStatus
 from rest_framework.exceptions import ValidationError, ValidationError, NotAuthenticated, PermissionDenied
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
+from .models import Task
 
 
 class create_task(APIView):
@@ -29,6 +31,25 @@ class create_task(APIView):
             return Response({"error": "Requested object does not exist."}, status=status.HTTP_404_NOT_FOUND)
         except Exception:
             return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+class get_task(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+         tasks =Task.objects.filter(user=request.user)  # select * from task where user = request.user_id
+         serializer = Create_Task_Serializer(tasks, many = True)
+         return Response(serializer.data, status = status.HTTP_200_OK)
+    
+
+
+# class update_task(APIView):
+#     permission_classes = [IsAuthenticated]
+
+
+        
+
+
         
 
            
