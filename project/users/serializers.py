@@ -62,7 +62,7 @@ class LoginSerializers(serializers.Serializer):
         }
     
 
-class deleteUser(serializers.Serializer):
+class DeleteUser(serializers.Serializer):
     id = serializers.IntegerField()
 
     def del_user(self):
@@ -72,6 +72,37 @@ class deleteUser(serializers.Serializer):
             raise serializers.ValidationError("User does not exist")
         return {"message": "User deleted successfully"}
     
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(max_length = 50)
+    new_password = serializers.CharField(max_length = 50)
+    confirm_password = serializers.CharField(max_length = 50)
+
+
+    def validate(self, attrs):
+        user = self.context.get('request').user
+        old_password = attrs.get('old_password')
+        new_password = attrs.get('new_password')
+        confirm_password = attrs.get('confirm_password')
+
+        if not user.check_password(old_password):
+            raise serializers.ValidationError("Wrong cureent password.") 
+        if not new_password == confirm_password:
+            raise serializers.ValidationError("Please Enter the same new password.")
+        if old_password == new_password:
+            raise serializers.ValidationError({"new_password": "New password cannot be the same as the old one."})
+        return attrs
+    
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data.get('new_password'))
+        instance.save()
+        return instance
+        
+
+
+            
+
+
 
     
 

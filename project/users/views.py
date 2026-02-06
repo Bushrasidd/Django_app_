@@ -2,12 +2,13 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer, LoginSerializers, deleteUser
+from .serializers import UserSerializer, LoginSerializers, DeleteUser, ChangePasswordSerializer
 from http import HTTPStatus
 from rest_framework import status
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -80,13 +81,32 @@ class UpdateUser(APIView):
 
 class DeleteUser(APIView):
     def delete(self, request):
-        user = deleteUser(data = request.data)
+        user = DeleteUser(data = request.data)
         try:
             if user.is_valid():
                 result = user.del_user()   
                 return Response(result, status=status.HTTP_200_OK)
         except:
                return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class ChangePassword(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        serializer = ChangePasswordSerializer(instance=request.user, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"detail": "Password updated successfully."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+        
+
+
+        
+
+
+        
 
 
 

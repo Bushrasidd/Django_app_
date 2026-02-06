@@ -18,4 +18,5 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('logout/', views.logout.as_view(), name='user-logout'),
     path('delete/',views.DeleteUser.as_view(), name='delete-user'),
+    path('change_password/',views.ChangePassword.as_view(), name='change_password'),
 ]
